@@ -1,5 +1,6 @@
-name: traccar_client
-description: "Traccar Client"
+name: geo_trackforce
+description: "Geo TrackForce - GPS & Tracking System"
+
 publish_to: 'none'
 version: 9.4.3+103
 
@@ -9,6 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  http: ^1.2.1
   flutter_localizations:
     sdk: flutter
   intl: any
@@ -33,3 +35,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
+
+  assets:
+    - assets/images/logo.png
+

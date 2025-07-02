@@ -4,7 +4,7 @@
     <uses-permission android:name="android.permission.CAMERA"/>
     <application
         tools:replace="android:label"
-        android:label="Traccar Client"
+        android:label="Geo TrackForce"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:networkSecurityConfig="@xml/network_security_config">
@@ -17,7 +17,7 @@
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize">
-            <!-- Specifies an Android theme to apply to this Activity as soon as
+        <!-- Specifies an Android theme to apply to this Activity as soon as
                  the Android process has started. This theme is visible to the user
                  while the Flutter UI initializes. After that, this theme continues
                  to determine the Window background behind the Flutter UI. -->
@@ -39,7 +39,7 @@
         <meta-data
             android:name="com.transistorsoft.locationmanager.license"
             android:value="ddc599599cddaa61dfe5bb25c2b46f549c6d749fae5d0273297b304753e2e5e3" />
-    </application>
+    </>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and
          https://developer.android.com/reference/android/content/Intent#ACTION_PROCESS_TEXT.
