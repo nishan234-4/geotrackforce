@@ -1,259 +1,184 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http; // Allowed package
+import 'main_screen.dart';
 
 void main() {
-  runApp(const GeoTrackApp());
+  runApp(const GeoTrackForceApp());
 }
 
-class GeoTrackApp extends StatelessWidget {
-  const GeoTrackApp({super.key});
+class GeoTrackForceApp extends StatelessWidget {
+  const GeoTrackForceApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Geo TrackForce',
+      title: 'GeoTrackForce',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green).copyWith(
-          primary: Colors.green[700],
-          onPrimary: Colors.white,
-          secondary: Colors.amber,
-        ),
-        useMaterial3: true,
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            foregroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-        ),
-        inputDecorationTheme: InputDecorationTheme(
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+      theme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: const Color(0xFF102A43),
+        inputDecorationTheme: const InputDecorationTheme(
           filled: true,
-          fillColor: Colors.grey[50],
-          contentPadding: const EdgeInsets.symmetric(
-            vertical: 16.0,
-            horizontal: 16.0,
+          fillColor: Color(0xFF1B365D),
+          labelStyle: TextStyle(color: Colors.white70),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.lightBlueAccent),
+            borderRadius: BorderRadius.all(Radius.circular(12)),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.white38),
+            borderRadius: BorderRadius.all(Radius.circular(12)),
           ),
         ),
       ),
-      home: const LoginPage(), // Set LoginPage as the initial screen
+      home: const LoginScreen(),
     );
   }
 }
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _emailController = TextEditingController();
+class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool _loading = false;
-  String? _errorMessage;
 
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
+  bool _obscurePassword = true;
+  bool _rememberMe = false;
+
+  void _togglePasswordVisibility() {
+    setState(() {
+      _obscurePassword = !_obscurePassword;
+    });
   }
 
-  Future<void> _login() async {
-    setState(() {
-      _loading = true;
-      _errorMessage = null;
-    });
+  void _login() {
+    final username = _usernameController.text.trim();
+    final password = _passwordController.text;
 
-    final Uri url = Uri.parse('https://system.geotrack.com.np/login/');
-    try {
-      final http.Response response = await http.post(
-        url,
-        headers: <String, String>{
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: <String, String>{
-          'username': _emailController.text.trim(),
-          'password': _passwordController.text.trim(),
-        },
+    if (username == 'admin' && password == 'admin') {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const MainScreen()),
       );
-
-      if (!mounted) return;
-
-      if (response.statusCode == 200 &&
-          response.body.toLowerCase().contains("dashboard")) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute<HomePage>(
-            builder: (BuildContext context) => const HomePage(),
-          ),
-        );
-      } else {
-        setState(() {
-          _errorMessage = 'Invalid email or password';
-        });
-      }
-    } catch (e) {
-      setState(() {
-        _errorMessage = 'Error: ${e.toString()}';
-      });
-    } finally {
-      if (mounted) {
-        setState(() {
-          _loading = false;
-        });
-      }
+    } else {
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          backgroundColor: const Color(0xFF102A43),
+          title: const Text('Error', style: TextStyle(color: Colors.white)),
+          content: const Text('Invalid username or password.', style: TextStyle(color: Colors.white70)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Retry', style: TextStyle(color: Colors.lightBlueAccent)),
+            ),
+          ],
+        ),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(
-        context,
-      ).colorScheme.surfaceVariant, // Using theme color
       body: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Container(
-            padding: const EdgeInsets.all(32),
-            constraints: const BoxConstraints(maxWidth: 400),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface, // Using theme color
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: const <BoxShadow>[
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 20,
-                  spreadRadius: 5,
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.network(
+                'https://www.geotrack.com.np/storage/site-page-details/PNg%20Logo-01.png',
+                width: 120,
+                height: 120,
+                fit: BoxFit.contain,
+              ),
+              const SizedBox(height: 20),
+              Text(
+                'GeoTrackForce',
+                style: TextStyle(
+                  color: Colors.lightBlueAccent.shade100,
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 2,
                 ),
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min, // To prevent extra space
-              children: <Widget>[
-                // The image URL is a placeholder as per instructions.
-                // It is positioned and sized to serve as the application's logo.
-                Image.network(
-                  'https://www.gstatic.com/flutter-onestack-prototype/genui/example_1.jpg',
-                  height: 100,
-                  fit: BoxFit.contain,
-                  // Updated semantic label to reflect the new GeoTrack logo intent.
-                  semanticLabel: 'Geo Track Logo',
+              ),
+              const SizedBox(height: 40),
+              TextField(
+                controller: _usernameController,
+                keyboardType: TextInputType.text,
+                style: const TextStyle(color: Colors.black12),
+                decoration: const InputDecoration(
+                  labelText: 'Username',
+                  prefixIcon: Icon(Icons.person, color: Colors.white70),
                 ),
-                const SizedBox(height: 20),
-                Text(
-                  "GeoTrackForce Login",
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 30),
-                TextField(
-                  controller: _emailController,
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
-                    prefixIcon: Icon(Icons.email),
-                  ),
-                  keyboardType: TextInputType.emailAddress,
-                  textInputAction: TextInputAction.next,
-                ),
-                const SizedBox(height: 20),
-                TextField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                    labelText: 'Password',
-                    prefixIcon: Icon(Icons.lock),
-                  ),
-                  textInputAction: TextInputAction.done,
-                  onSubmitted: (_) => _login(),
-                ),
-                const SizedBox(height: 25),
-                _loading
-                    ? CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    Theme.of(context).colorScheme.primary,
-                  ),
-                )
-                    : SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _login,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(
-                        context,
-                      ).colorScheme.primary,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
+              ),
+              const SizedBox(height: 20),
+              TextField(
+                controller: _passwordController,
+                obscureText: _obscurePassword,
+                style: const TextStyle(color: Colors.black),
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  prefixIcon: const Icon(Icons.lock, color: Colors.white70),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                      color: Colors.white70,
                     ),
-                    child: Text(
-                      "Login",
-                      style: Theme.of(context).textTheme.titleMedium
-                          ?.copyWith(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.onPrimary,
-                      ),
+                    onPressed: _togglePasswordVisibility,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  Checkbox(
+                    value: _rememberMe,
+                    onChanged: (value) {
+                      setState(() {
+                        _rememberMe = value ?? false;
+                      });
+                    },
+                    activeColor: Colors.lightBlueAccent,
+                  ),
+                  const Text(
+                    'Remember me',
+                    style: TextStyle(color: Colors.white70),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 30),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.lightBlueAccent,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
                     ),
                   ),
+                  onPressed: _login,
+                  icon: const Icon(Icons.login, color: Colors.white),
+                  label: const Text('Login', style: TextStyle(color: Colors.white, fontSize: 18)),
                 ),
-                const SizedBox(height: 10),
-                if (_errorMessage != null)
-                  Text(
-                    _errorMessage!,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.error,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 20),
+              TextButton(
+                onPressed: () {
+                  // TODO: Add contact navigation
+                },
+                child: const Text(
+                  'For more information, Contact Us',
+                  style: TextStyle(color: Colors.white54, fontSize: 12),
+                ),
+              ),
+            ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("GeoTrackForce"),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Theme.of(context).colorScheme.onPrimary,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Icon(
-              Icons.check_circle_outline,
-              size: 80.0,
-              color: Theme.of(context).colorScheme.secondary,
-            ),
-            const SizedBox(height: 24.0),
-            Text(
-              "Login successful!",
-              style: Theme.of(context).textTheme.headlineSmall,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8.0),
-            Text(
-              "Welcome to your dashboard.",
-              style: Theme.of(context).textTheme.bodyMedium,
-              textAlign: TextAlign.center,
-            ),
-          ],
         ),
       ),
     );

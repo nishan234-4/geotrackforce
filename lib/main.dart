@@ -7,7 +7,6 @@ import 'package:rate_my_app/rate_my_app.dart';
 
 import 'package:geo_trackforce/geolocation_service.dart';
 import 'package:geo_trackforce/push_service.dart';
-import 'package:geo_trackforce/quick_actions.dart';
 import 'package:geo_trackforce/preferences.dart';
 import 'package:geo_trackforce/l10n/app_localizations.dart';
 import 'package:geo_trackforce/login_page.dart'; // ✅ Login Page import
@@ -60,6 +59,7 @@ class _MainAppState extends State<MainApp> {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       debugShowCheckedModeBanner: false,
+      title: 'Geo TrackForce Pro',  // ✅ App Name
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.green,
@@ -72,12 +72,7 @@ class _MainAppState extends State<MainApp> {
           brightness: Brightness.dark,
         ),
       ),
-      home: Stack(
-        children: const [
-          QuickActionsInitializer(), // 🔧 Quick actions init
-          LoginPage(),               // 🟢 Load login screen
-        ],
-      ),
+      home: const LoginScreen(),   // ✅ Start with Login Page
     );
   }
 }
