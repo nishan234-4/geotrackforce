@@ -686,10 +686,10 @@ packages:
     dependency: "direct main"
     description:
       name: wakelock_partial_android
-      sha256: b99f917728ee4d62fd637e021cdd78e2f271eaf3855ad8ee584a4a7df318e69e
+      sha256: "480cc8a207cad47d9aa37c7d5da7f153e00396a71014f174806b1fe6c2edede7"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0"
+    version: "1.0.1"
   web:
     dependency: transitive
     description:
